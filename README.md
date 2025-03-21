@@ -10,11 +10,11 @@ Comment Section: Posts can have comments displayed on the post page.
 
 ## Technologies Used
 Frontend:
-React.js
-React Router
-Vite
-Custom CSS
-REST API consumption (fetch)
+- React.js
+- React Router
+- Vite
+- Custom CSS
+- REST API consumption (fetch)
 
 ## Prerequisites
 Make sure you have Node.js installed on your machine. If not, download and install the latest version from the official Node.js website.
