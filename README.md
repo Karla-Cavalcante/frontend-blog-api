@@ -1,30 +1,26 @@
-# Blog Tech
+## Blog Tech
+This is a simple blog project with functionalities for creating, viewing, editing, and deleting posts. The application allows an administrator to create new posts, view existing ones, and edit or delete posts. Users can access and view posts, as well as interact with comments.
 
-Este é um projeto de blog simples, com funcionalidade de criação de posts, visualização, edição e exclusão. O aplicativo permite que um administrador crie novos posts, visualize posts existentes e edite ou exclua posts. Os usuários podem acessar e visualizar posts, além de interagir com os comentários.
+## Features
+User Authentication: Login system with simple authentication.
+Post Creation: The administrator can create new posts and assign an author.
+Edit and Delete Posts: The administrator can edit and delete posts.
+Post Viewing: Users can view individual posts and associated comments.
+Comment Section: Posts can have comments displayed on the post page.
 
-## Funcionalidades
+## Technologies Used
+Frontend:
+React.js
+React Router
+Vite
+Custom CSS
+REST API consumption (fetch)
 
-- **Autenticação de Usuário**: Login com sistema de autenticação simples.
-- **Criação de Posts**: O administrador pode criar novos posts e definir um autor.
-- **Edição e Exclusão de Posts**: O administrador pode editar e excluir posts.
-- **Visualização de Posts**: Usuários podem visualizar posts individuais e comentários associados.
-- **Seção de Comentários**: Os posts podem ter comentários, que são exibidos na página do post.
+## Prerequisites
+Make sure you have Node.js installed on your machine. If not, download and install the latest version from the official Node.js website.
 
-## Tecnologias Utilizadas
+## Project Structure
+The project is divided into two separate repositories:
 
-- React.js
-- React Router
-- Vite
-- CSS (Customizado)
-- Consumo de API REST (fetch)
-
-## Pré-requisitos
-
-Certifique-se de ter o Node.js instalado em sua máquina. Caso não tenha, baixe e instale a versão mais recente do [site oficial do Node.js](https://nodejs.org/).
-Estrutura do Projeto
-
-## O projeto está dividido em dois repositórios separados:
-
-Frontend: [link para o repositório do frontend](https://github.com/Karla-Cavalcante/frontend-blog-api) (React + Vite)
-Backend: [link para o repositório do backend](https://github.com/Karla-Cavalcante/blog-api) (Node.js + Express)
-
+Frontend: [[Frontend Repository Link](https://github.com/Karla-Cavalcante/frontend-blog-api)] (React + Vite)
+Backend: [[Backend Repository Link](https://github.com/Karla-Cavalcante/blog-api)] (Node.js + Express)
