@@ -5,7 +5,7 @@ function PostCard({ post }) {
     <div className="post">
       <h4>{post.title}</h4>
       <p>{post.content.substring(0, 150)}...</p>
-      <Link to={`/post/${post.id}`}>Leia mais</Link> {/* Link para detalhes do post */}
+      <Link to={`/post/${post.id}`}>Leia mais</Link> 
     </div>
   );
 }

@@ -10,7 +10,7 @@ function Home({ posts }) {
         </p>
       </section>
 
-      {/* Exibindo os posts */}
+      
       <div className="container">
         <div className="posts">
           {posts.length === 0 ? (

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');  
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const credentials = { username, password };
+    const credentials = { name, password };  
 
     try {
       const response = await fetch('http://localhost:5001/api/login', {
@@ -25,7 +25,7 @@ function Login() {
 
       if (response.ok) {
         localStorage.setItem('admin', JSON.stringify(data));
-        navigate('/admin'); 
+        navigate('/admin');
       } else {
         setErrorMessage(data.message || 'Credenciais inválidas');
       }
@@ -43,8 +43,8 @@ function Login() {
           <label>Nome de usuário:</label>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={name}  
+            onChange={(e) => setName(e.target.value)}  
             placeholder="Digite seu nome de usuário"
             required
           />

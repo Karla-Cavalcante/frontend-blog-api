@@ -1,118 +1,107 @@
 import { useState, useEffect } from "react";
-import "./Admin.css"; 
+import "./Admin.css";
 
-function Admin({ addPost }) {
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+function Admin({ addPost, updatePost, deletePost }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [authorId, setAuthorId] = useState(1);
   const [posts, setPosts] = useState([]);
-  const [successMessage, setSuccessMessage] = useState(""); 
-  const [errorMessage, setErrorMessage] = useState(""); 
-  const [editingPost, setEditingPost] = useState(null); 
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [editingPost, setEditingPost] = useState(null);
 
-  
   useEffect(() => {
-    fetch("http://localhost:5001/api/posts")
+    fetch(`${BACKEND_URL}/api/posts`)
       .then((response) => response.json())
-      .then((data) => setPosts(data)) 
+      .then((data) => setPosts(data))
       .catch((error) => console.error("Erro ao carregar posts:", error));
   }, []);
 
   
   const handleCreateOrUpdatePost = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setErrorMessage("Você precisa estar logado para criar ou editar posts.");
+      return;
+    }
 
-    const newPost = {
-      title,
-      content,
-      authorId,
-    };
+    const postData = { title, content };
 
     try {
-      let response;
-      let data;
-
+      let response, data;
       if (editingPost) {
-        
-        response = await fetch(`http://localhost:5001/api/posts/${editingPost.id}`, {
+        response = await fetch(`${BACKEND_URL}/api/posts/${editingPost.id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
-          body: JSON.stringify(newPost),
+          body: JSON.stringify(postData),
         });
+        if (!response.ok) throw new Error("Erro ao editar post");
         data = await response.json();
+        setPosts((prevPosts) =>
+          prevPosts.map((post) => (post.id === data.id ? data : post))
+        );
         setSuccessMessage("Post atualizado com sucesso!");
       } else {
         
-        response = await fetch("http://localhost:5001/api/posts", {
+        response = await fetch(`${BACKEND_URL}/api/posts`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
-          body: JSON.stringify(newPost),
+          body: JSON.stringify(postData),
         });
+        if (!response.ok) throw new Error("Erro ao criar post");
         data = await response.json();
+        setPosts((prevPosts) => [...prevPosts, data]);
         setSuccessMessage("Post criado com sucesso!");
       }
-
-      if (!response.ok) {
-        throw new Error("Falha ao salvar post");
-      }
-
-      
-      setPosts((prevPosts) => {
-        if (editingPost) {
-          
-          return prevPosts.map((post) =>
-            post.id === editingPost.id ? data : post
-          );
-        } else {
-          
-          return [...prevPosts, data];
-        }
-      });
-
-     
       setTitle("");
       setContent("");
-      setAuthorId(1); 
-      setErrorMessage(""); 
-      setEditingPost(null); 
+      setEditingPost(null);
+      setErrorMessage("");
     } catch (error) {
-      console.error("Erro ao salvar post:", error);
-      setErrorMessage("Erro ao salvar post, tente novamente.");
-      setSuccessMessage(""); 
+      setErrorMessage(error.message);
     }
   };
 
   
-  const handleEditPost = (post) => {
+  const handleEdit = (post) => {
+    setEditingPost(post);
     setTitle(post.title);
     setContent(post.content);
-    setAuthorId(post.authorId);
-    setEditingPost(post);
   };
 
   
-  const handleDeletePost = async (postId) => {
+  const handleDelete = async (postId) => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setErrorMessage("Você precisa estar logado para excluir posts.");
+      return;
+    }
+
     try {
-      const response = await fetch(`http://localhost:5001/api/posts/${postId}`, {
+      const response = await fetch(`${BACKEND_URL}/api/posts/${postId}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
       });
 
       if (!response.ok) {
-        throw new Error("Falha ao excluir post");
+        throw new Error("Erro ao excluir post");
       }
 
       
       setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
       setSuccessMessage("Post excluído com sucesso!");
-      setErrorMessage(""); 
     } catch (error) {
-      console.error("Erro ao excluir post:", error);
-      setErrorMessage("Erro ao excluir post, tente novamente.");
-      setSuccessMessage(""); 
+      setErrorMessage(error.message);
     }
   };
 
@@ -138,36 +127,24 @@ function Admin({ addPost }) {
             placeholder="Digite o conteúdo do post"
           />
         </div>
-        <div className="form-group">
-          <label>Autor ID:</label>
-          <input
-            type="number"
-            value={authorId}
-            onChange={(e) => setAuthorId(Number(e.target.value))}
-            placeholder="ID do autor"
-          />
-        </div>
-        <button type="submit">{editingPost ? "Salvar Alterações" : "Criar Post"}</button>
+        <button type="submit">
+          {editingPost ? "Salvar Alterações" : "Criar Post"}
+        </button>
       </form>
 
-      {/* Exibe mensagem de sucesso ou erro */}
       {successMessage && <p className="success-message">{successMessage}</p>}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
 
       <h3>Posts Criados</h3>
       <div className="posts-list">
-        {posts.length === 0 ? (
-          <p>Nenhum post encontrado</p>
-        ) : (
-          posts.map((post) => (
-            <div key={post.id} className="post-card">
-              <h4>{post.title}</h4>
-              <p>{post.content.substring(0, 100)}...</p>
-              <button onClick={() => handleEditPost(post)}>Editar</button>
-              <button onClick={() => handleDeletePost(post.id)}>Excluir</button>
-            </div>
-          ))
-        )}
+        {posts.map((post) => (
+          <div key={post.id} className="post-card">
+            <h4>{post.title}</h4>
+            <p>{post.content.substring(0, 100)}...</p>
+            <button onClick={() => handleEdit(post)}>Editar</button>
+            <button onClick={() => handleDelete(post.id)}>Excluir</button>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,18 +1,17 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import AddComment from "./AddComment"; 
+import AddComment from "./AddComment";
 
 function PostDetail({ posts, setPosts }) {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [post, setPost] = useState(null);
 
-  
   useEffect(() => {
     const selectedPost = posts.find((post) => post.id === parseInt(id));
     if (selectedPost) {
       setPost(selectedPost);
     }
-  }, [id, posts]); 
+  }, [id, posts]);
 
   if (!post) {
     return <p>Post não encontrado</p>;
@@ -29,12 +28,13 @@ function PostDetail({ posts, setPosts }) {
       ) : (
         post.comments.map((comment) => (
           <div key={comment.id}>
-            <p><strong>Autor {comment.authorId}</strong>: {comment.content}</p>
+            <p>
+              <strong>Autor {comment.authorId}</strong>: {comment.content}
+            </p>
           </div>
         ))
       )}
 
-      {}
       <AddComment postId={post.id} setPosts={setPosts} />
     </div>
   );
